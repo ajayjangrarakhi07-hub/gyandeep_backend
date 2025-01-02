@@ -3,21 +3,21 @@ const mongoose = require('mongoose');
 const questionSchema = new mongoose.Schema({
     question_number: { type: Number, required: true },
     question: { type: String, required: true },
-    option1: String,
-    option2: String,
-    option3: String,
-    option4: String,
-    correctAnswer: String,
-    description: String,
+    option1: { type: String, required: true },
+    option2: { type: String, required: true },
+    option3: { type: String, required: true },
+    option4: { type: String, required: true },
+    correctAnswer: { type: String, required: true },
+    description: { type: String, required: true },
 });
 
 const subjectSchema = new mongoose.Schema({
     name: { type: String, required: true },
     count: { type: Number, default: 0 },
-    image_url: String,
+    image_url: { type: String },
     categories: {
-        hisar: [questionSchema],
-        ambala: [questionSchema],
+        type: Map,
+        of: [questionSchema]
     },
 });
 
