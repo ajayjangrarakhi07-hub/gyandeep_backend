@@ -12,6 +12,7 @@ const questionSchema = new mongoose.Schema({
 });
 
 const subjectSchema = new mongoose.Schema({
+    id: { type: Number, default: 0 },
     name: { type: String, required: true },
     count: { type: Number, default: 0 },
     image_url: { type: String },
