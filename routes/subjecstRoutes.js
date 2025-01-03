@@ -9,4 +9,7 @@ router.post('/save-subject', subjectController.saveSubject);
 router.get('/get-subjects', subjectController.getSubjects);
  
 
+// Route to update a lesson with new categories
+router.put('/update-lesson/:name', subjectController.updateLesson);
+
 module.exports = router;

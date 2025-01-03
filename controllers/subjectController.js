@@ -22,3 +22,21 @@ exports.getSubjects = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
+// Update lesson categories by subject name
+exports.updateLesson = async (req, res) => {
+    const subjectName = req.params.name;
+    const { categories } = req.body;
+
+    try {
+        const updatedSubject = await Subject.findOneAndUpdate(
+            { name: subjectName },
+            { $set: { categories } },  // Set the updated categories
+            { new: true }
+        );
+        res.json(updatedSubject);
+    } catch (error) {
+        console.error('Error updating subject:', error);
+        res.status(500).json({ message: 'Failed to update lesson categories', error });
+    }
+};
