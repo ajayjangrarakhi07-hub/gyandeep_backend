@@ -17,7 +17,8 @@ const subjectSchema = new mongoose.Schema({
     image_url: { type: String },
     categories: {
         type: Map,
-        of: [questionSchema]
+        of: [questionSchema], // Allows dynamic keys with an array of questions as values
+        default: undefined, // Ensure no default value for categories
     },
 });
 

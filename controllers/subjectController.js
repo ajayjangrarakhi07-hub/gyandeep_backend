@@ -11,6 +11,7 @@ exports.saveSubject = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
 // Get all subjects
 exports.getSubjects = async (req, res) => {
     try {
