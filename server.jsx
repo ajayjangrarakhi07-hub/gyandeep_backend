@@ -5,6 +5,8 @@ const connectDB = require('./config/db');
 
 const quizResultsRoute = require('./routes/quizResults');
 const subjectsRoutes = require('./routes/subjecstRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');  // Import review routes
+
 dotenv.config();
 
 const app = express();
@@ -20,6 +22,8 @@ connectDB();
 app.use('/api', quizResultsRoute);
 
 app.use('/api', subjectsRoutes);
+
+app.use('/api', reviewRoutes);  // Use review routes
 
 // Express route for updating a lesson with new categories
 app.put('/api/update-lesson/:name', async (req, res) => {
