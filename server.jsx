@@ -7,7 +7,7 @@ const quizResultsRoute = require('./routes/quizResults');
 const subjectsRoutes = require('./routes/subjecstRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');  // Import review routes
 
-const { getAccessToken } = require("./src/services/fcmService");
+ 
 
 dotenv.config();
 
@@ -43,22 +43,6 @@ app.put('/api/update-lesson/:name', async (req, res) => {
         res.status(500).json({ message: 'Failed to update lesson categories', error });
     }
 });
-
-
-// send Notification
-app.post("/send-notification", async (req, res) => {
-    try {
-        const { token, title, body } = req.body;
-        const result = await getAccessToken();
-        // You can use the access token here to make any API calls or send notifications
-        res.json({ success: true, message: "Notification sent", result });
-    } catch (error) {
-        console.error("Error sending notification:", error);
-        res.status(500).json({ success: false, message: error.message });
-    }
-});
-
-
 
 
 
