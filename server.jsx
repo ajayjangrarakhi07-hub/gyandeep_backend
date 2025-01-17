@@ -4,7 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 
 const quizResultsRoute = require('./routes/quizResults');
-const subjectsRoutes = require('./routes/subjecstRoutes');
+const subjectsRoutes  = require('./routes/subjecstRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');  // Import review routes
 const postRoutes = require('./routes/postRoutes'); // Import new post routes
 const getSubjectByNameRoute = require('./routes/subjecstRoutes'); // Import new route
