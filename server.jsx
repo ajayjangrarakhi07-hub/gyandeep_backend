@@ -7,7 +7,9 @@ const quizResultsRoute = require('./routes/quizResults');
 const subjectsRoutes = require('./routes/subjecstRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');  // Import review routes
 const postRoutes = require('./routes/postRoutes'); // Import new post routes
- 
+const getSubjectByNameRoute = require('./routes/getSubjectByNameRoute'); // Import new route
+
+
 
 dotenv.config();
 
@@ -29,6 +31,7 @@ app.use('/api', reviewRoutes);  // Use review routes
 
 app.use('/api', postRoutes); // Use post routes
 
+app.use('/api', getSubjectByNameRoute); // Use new route
 
 
 // Express route for updating a lesson with new categories
