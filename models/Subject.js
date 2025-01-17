@@ -13,7 +13,7 @@ const questionSchema = new mongoose.Schema({
 
 const subjectSchema = new mongoose.Schema({
     id: { type: Number, default: 0 },
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },  // index is faster the querry retrevieing data 
     count: { type: Number, default: 0 },
     image_url: { type: String },
     categories: {
