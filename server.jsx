@@ -7,7 +7,7 @@ const quizResultsRoute = require('./routes/quizResults');
 const subjectsRoutes = require('./routes/subjecstRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');  // Import review routes
 const postRoutes = require('./routes/postRoutes'); // Import new post routes
-const getSubjectByNameRoute = require('./routes/getSubjectByNameRoute'); // Import new route
+const getSubjectByNameRoute = require('./routes/subjecstRoutes'); // Import new route
 
 
 
