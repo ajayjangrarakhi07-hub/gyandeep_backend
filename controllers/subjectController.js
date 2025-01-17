@@ -13,8 +13,10 @@ exports.saveSubject = async (req, res) => {
 };
 
 // Get subject by name
+// In your backend (subjectController.js)
 exports.getSubjectByName = async (req, res) => {
-    const subjectName = req.query.name; // Extract the name from query parameter
+    const subjectName = req.query.name;
+    console.log('Received subject name:', subjectName);  // Log the received name
 
     try {
         if (!subjectName) {
@@ -33,6 +35,7 @@ exports.getSubjectByName = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
 // Get all subjects
 exports.getSubjects = async (req, res) => {
     try {
