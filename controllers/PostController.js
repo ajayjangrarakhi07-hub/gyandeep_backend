@@ -4,11 +4,12 @@ exports.createPost = async (req, res) => {
     try {
         const post = new Post(req.body);
         await post.save();
-        res.status(201).json(post);
+        res.status(201).json({ message: 'Post created successfully', post });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to create post', error });
+        res.status(500).json({ message: 'Failed to create post', error: error.message });
     }
 };
+
 exports.createPosts = async (req, res) => {
     try {
         const { posts } = req.body;
@@ -24,15 +25,15 @@ exports.createPosts = async (req, res) => {
         // Return success response
         res.status(201).json({ message: 'Posts created successfully', posts: newPosts });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating posts', error });
+        res.status(500).json({ message: 'Error creating posts', error: error.message });
     }
 };
 
 exports.getPosts = async (req, res) => {
     try {
         const posts = await Post.find();
-        res.status(200).json(posts);
+        res.status(200).json({ message: 'Posts fetched successfully', posts });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch posts', error });
+        res.status(500).json({ message: 'Failed to fetch posts', error: error.message });
     }
 };
