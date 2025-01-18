@@ -12,6 +12,20 @@ exports.saveSubject = async (req, res) => {
     }
 };
 
+
+// get name count image // Fetch subjects with limited fields
+exports.getSubjectsSummary = async (req, res) => {
+    try {
+        // Fetch only name, count, and image_url fields
+        const subjects = await Subject.find({}, 'name count image_url');
+        res.status(200).json(subjects);
+    } catch (error) {
+        console.error('Error fetching subjects summary:', error.message);
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+
 // Get subject by name
 // In your backend (subjectController.js)
 exports.getSubjectByName = async (req, res) => {

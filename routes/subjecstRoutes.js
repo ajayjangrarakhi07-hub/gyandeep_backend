@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const subjectController = require('../controllers/subjectController');
+ 
 
 // Add a subject
 router.post('/save-subject', subjectController.saveSubject);
+
+// Get subject name count image like summary 
+router.get('/get-subjects-summary', subjectController.getSubjectsSummary);
 
 // Get all subjects
 router.get('/get-subjects', subjectController.getSubjects);
@@ -17,4 +21,5 @@ router.get('/get-subject-by-name', subjectController.getSubjectByName);
 router.put('/update-lesson/:name', subjectController.updateLesson);
 
 module.exports = router;
+  
 
