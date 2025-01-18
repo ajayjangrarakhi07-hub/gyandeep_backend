@@ -8,7 +8,8 @@ const subjectsRoutes  = require('./routes/subjecstRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');   
 const postRoutes = require('./routes/postRoutes');  
 const getSubjectByNameRoute = require('./routes/subjecstRoutes'); 
- 
+const getSubjectsSummary = require('./routes/subjecstRoutes'); 
+
 
 
 dotenv.config();
@@ -32,6 +33,8 @@ app.use('/api', reviewRoutes);  // Use review routes
 app.use('/api', postRoutes); // Use post routes
 
 app.use('/api', getSubjectByNameRoute); // Use new route
+
+app.use('/api', getSubjectsSummary); // Use new route
 
 
 // Express route for updating a lesson with new categories
