@@ -17,7 +17,7 @@ exports.saveSubject = async (req, res) => {
 exports.getSubjectsSummary = async (req, res) => {
     try {
         // Fetch only name, count, and image_url fields
-        const subjects = await Subject.find({}, 'id,name count image_url');
+        const subjects = await Subject.find({}, 'name count image_url');
         res.status(200).json(subjects);
     } catch (error) {
         console.error('Error fetching subjects summary:', error.message);
