@@ -1,9 +1,8 @@
 const QuizResult = require('../models/QuizResult');
 
-// Save or update quiz result
 const saveQuizResult = async (req, res) => {
     try {
-        const { testName, topicName, score,  userName, userEmail } = req.body;
+        const { testName, topicName, score, userName, userEmail } = req.body;
 
         // Validate required fields
         if (!testName || !topicName || !score || !userName || !userEmail) {
@@ -14,7 +13,9 @@ const saveQuizResult = async (req, res) => {
         const existingResult = await QuizResult.findOne({ userEmail, topicName });
 
         if (existingResult) {
-            // Update the existing quiz result
+            // Clear the previous score (if necessary, explicitly set to 0 or null)
+            existingResult.score = 0; // Clear previous score
+            // Now, update with the new score
             existingResult.score = score;
             existingResult.updatedAt = new Date();
 
@@ -25,7 +26,7 @@ const saveQuizResult = async (req, res) => {
                 data: updatedResult,
             });
         } else {
-            // Create a new quiz result
+            // Create a new quiz result if not found
             const newQuizResult = new QuizResult({
                 testName,
                 topicName,
