@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 
 const quizResultSchema = new mongoose.Schema({
-    testId: String,
-    testName: String,
-    topicName: String,
-    score: String,
+    testId: { type: String, required: true },
+    testName: { type: String, required: true },
+    topicName: { type: String, required: true },
+    score: { type: String, required: true },
     feedback: { type: String, default: null },
-    userNumberId: String,
-    userEmail: String,
-    date: { type: Date, default: Date.now }
+    userName: { type: String, required: true },
+    userEmail: { type: String, required: true },
+    date: { type: Date, default: Date.now }, // Automatically sets the creation date
 });
 
-const QuizResult = mongoose.model('QuizResult', quizResultSchema);
-module.exports = QuizResult;
+module.exports = mongoose.model('QuizResult', quizResultSchema);
