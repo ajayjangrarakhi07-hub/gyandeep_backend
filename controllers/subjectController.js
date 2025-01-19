@@ -13,17 +13,27 @@ exports.saveSubject = async (req, res) => {
 };
 
 
-// get name count image // Fetch subjects with limited fields
+// get id, name,  count,  image // Fetch subjects with limited fields
 exports.getSubjectsSummary = async (req, res) => {
     try {
-        // Fetch only name, count, and image_url fields
-        const subjects = await Subject.find({}, 'name count image_url');
-        res.status(200).json(subjects);
+        // Fetch only the fields we need: id, name, count, and image_url
+        const subjects = await Subject.find({}, 'id name count image_url').lean();
+
+        // Map through the subjects to ensure 'id' is returned, not '_id'
+        const subjectsWithId = subjects.map(subject => ({
+            id: subject.id,  // Directly include 'id' as it is stored in the field
+            name: subject.name,
+            count: subject.count,
+            image_url: subject.image_url,
+        }));
+
+        res.status(200).json(subjectsWithId);
     } catch (error) {
         console.error('Error fetching subjects summary:', error.message);
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
 
 
 // Get subject by name
