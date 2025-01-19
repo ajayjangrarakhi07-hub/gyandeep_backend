@@ -14,6 +14,8 @@ exports.saveSubject = async (req, res) => {
 
 
 // get id, name,  count,  image // Fetch subjects with limited fields
+// Backend Code - getSubjectsSummary function
+
 exports.getSubjectsSummary = async (req, res) => {
     try {
         // Fetch only the fields we need: id, name, count, and image_url
