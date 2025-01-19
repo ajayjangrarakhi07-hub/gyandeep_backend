@@ -3,7 +3,7 @@ const QuizResult = require('../models/QuizResult');
 // Save or update quiz result
 const saveQuizResult = async (req, res) => {
     try {
-        const { testName, topicName, score, feedback, userName, userEmail } = req.body;
+        const { testName, topicName, score,  userName, userEmail } = req.body;
 
         // Validate required fields
         if (!testName || !topicName || !score || !userName || !userEmail) {
@@ -16,7 +16,6 @@ const saveQuizResult = async (req, res) => {
         if (existingResult) {
             // Update the existing quiz result
             existingResult.score = score;
-            existingResult.feedback = feedback || existingResult.feedback; // Update feedback if provided
             existingResult.updatedAt = new Date();
 
             const updatedResult = await existingResult.save();
@@ -31,7 +30,6 @@ const saveQuizResult = async (req, res) => {
                 testName,
                 topicName,
                 score,
-                feedback: feedback || null,
                 userName,
                 userEmail,
             });
