@@ -1,33 +1,54 @@
 const QuizResult = require('../models/QuizResult');
 
-// Save quiz result
+// Save or update quiz result
 const saveQuizResult = async (req, res) => {
     try {
-        const { testId, testName, topicName, score, feedback, userName, userEmail } = req.body;
+        const { testName, topicName, score, feedback, userName, userEmail } = req.body;
 
         // Validate required fields
-        if (!testId || !testName || !topicName || !score || !userName || !userEmail) {
-            return res.status(400).send('Missing required fields.');
+        if (!testName || !topicName || !score || !userName || !userEmail) {
+            return res.status(400).json({ message: 'Missing required fields.' });
         }
 
-        // Create a new quiz result
-        const newQuizResult = new QuizResult({
-            testId,
-            testName,
-            topicName,
-            score,
-            feedback: feedback || null, // Use default value if feedback is not provided
-            userName,
-            userEmail,
-        });
+        // Check if a quiz result already exists for the same user and topic
+        const existingResult = await QuizResult.findOne({ userEmail, topicName });
 
-        await newQuizResult.save();
-        res.status(200).json({ message: 'Quiz result saved successfully!', data: newQuizResult });
+        if (existingResult) {
+            // Update the existing quiz result
+            existingResult.score = score;
+            existingResult.feedback = feedback || existingResult.feedback; // Update feedback if provided
+            existingResult.updatedAt = new Date();
+
+            const updatedResult = await existingResult.save();
+
+            return res.status(200).json({
+                message: 'Quiz result updated successfully!',
+                data: updatedResult,
+            });
+        } else {
+            // Create a new quiz result
+            const newQuizResult = new QuizResult({
+                testName,
+                topicName,
+                score,
+                feedback: feedback || null,
+                userName,
+                userEmail,
+            });
+
+            const savedResult = await newQuizResult.save();
+
+            return res.status(200).json({
+                message: 'Quiz result saved successfully!',
+                data: savedResult,
+            });
+        }
     } catch (error) {
         console.error('Error saving quiz result:', error);
         res.status(500).json({ message: 'Error saving quiz result.', error });
     }
 };
+
 
 // Get all quiz results
 const getQuizResults = async (req, res) => {
