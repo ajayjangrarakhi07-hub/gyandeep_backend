@@ -1,5 +1,6 @@
 const QuizResult = require('../models/QuizResult');
 
+
 const saveQuizResult = async (req, res) => {
     try {
         const { testName, topicName, score, userName, userEmail } = req.body;
@@ -48,11 +49,12 @@ const saveQuizResult = async (req, res) => {
     }
 };
 
-
-// Get all quiz results
+// Get quiz results by email
 const getQuizResults = async (req, res) => {
+    const { userEmail } = req.query; // Get userEmail from query params
     try {
-        const results = await QuizResult.find().sort({ date: -1 }); // Sort by newest first
+        // Find quiz results matching the email, sorted by date (newest first)
+        const results = await QuizResult.find({ userEmail : userEmail }).sort({ date: -1 });
         res.status(200).json(results);
     } catch (error) {
         console.error('Error fetching quiz results:', error);
