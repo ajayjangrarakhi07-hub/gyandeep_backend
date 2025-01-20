@@ -3,14 +3,29 @@ const Subject = require('../models/Subject');
 // Save a new subject
 exports.saveSubject = async (req, res) => {
     try {
-        const subject = new Subject(req.body);
-        await subject.save();
-        res.status(201).json({ message: 'Subject saved successfully!', subject });
+        const { name, count, image_url, categories, pdfs } = req.body;
+
+        // Basic validation
+        if (!name) {
+            return res.status(400).json({ message: "Subject name is required." });
+        }
+
+        const subject = new Subject({
+            name,
+            count: count || 0, // Default count to 0 if not provided
+            image_url: image_url || "",
+            categories: categories || {},
+            pdfs: pdfs || [],
+        });
+
+        const savedSubject = await subject.save();
+        res.status(201).json({ message: "Subject saved successfully!", subject: savedSubject });
     } catch (error) {
-        console.error('Error saving subject:', error.message);
-        res.status(500).json({ message: 'Server error', error });
+        console.error("Error saving subject:", error.message);
+        res.status(500).json({ message: "Server error", error });
     }
 };
+
 
 
 // get name count image // Fetch subjects with limited fields

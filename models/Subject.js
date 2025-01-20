@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 
 const pdfSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    url: { type: String, required: true },
+    title: { type: String },
+    url: { type: String},
 }); 
 
 const questionSchema = new mongoose.Schema({
