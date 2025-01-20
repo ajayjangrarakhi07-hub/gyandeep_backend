@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+
+const pdfSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    url: { type: String, required: true },
+}); 
+
 const questionSchema = new mongoose.Schema({
     question_number: { type: Number, required: true },
     question: { type: String, required: true },
@@ -21,6 +27,7 @@ const subjectSchema = new mongoose.Schema({
         of: [questionSchema], // Allows dynamic keys with an array of questions as values
         default: undefined, // Ensure no default value for categories
     },
+    pdfs: [pdfSchema], // Array of PDFs with schema validation
 });
 
 module.exports = mongoose.model('Subject', subjectSchema);

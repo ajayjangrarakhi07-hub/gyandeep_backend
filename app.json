@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "78c8b334-13f6-4fea-a260-611fcc8005b4"
+      }
+    },
+    "android": {
+      "package": "com.ajayjangra.haryanacetgyandeep"
+    }
+  }
+}
