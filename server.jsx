@@ -10,11 +10,13 @@ const postRoutes = require('./routes/postRoutes');
 const getSubjectByNameRoute = require('./routes/subjecstRoutes'); 
 const getSubjectsSummary = require('./routes/subjecstRoutes'); 
 
+
 // Import routes
 const discussionRoutes = require('./routes/discussionRoutes');
 
 // Import routes
 const fullMockTestRoutes = require('./routes/fullMockTestRoutes');
+const addNewTest = require('./routes/fullMockTestRoutes');
 
 
 dotenv.config();
@@ -45,6 +47,7 @@ app.use('/api', discussionRoutes);
 
 // Routes
 app.use('/api/fullMockTest', fullMockTestRoutes);
+app.use('/apl/add-mock-test', addNewTest);
 
 
 app.post('/api/submit-data', async (req, res) => {
