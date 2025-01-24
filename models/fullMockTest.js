@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+
+// Define the schema for FullMockTest
 const fullMockTestSchema = new mongoose.Schema({
     testSubjectName: {
         type: String,
@@ -20,3 +23,6 @@ const fullMockTestSchema = new mongoose.Schema({
         default: false,
     },
 }, { timestamps: true });
+
+
+module.exports = mongoose.model('FullMockTest', fullMockTestSchema);
