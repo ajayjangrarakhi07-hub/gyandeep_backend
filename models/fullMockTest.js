@@ -1,6 +1,3 @@
-const mongoose = require('mongoose');
-
-// Define the schema for FullMockTest
 const fullMockTestSchema = new mongoose.Schema({
     testSubjectName: {
         type: String,
@@ -13,7 +10,7 @@ const fullMockTestSchema = new mongoose.Schema({
         required: [true, 'URL link of test is required.'],
         validate: {
             validator: function (v) {
-                return /^https?:\/\/.+/.test(v); // Validates that the URL starts with http or https
+                return /^https?:\/\/.+/.test(v); // Validates URL format
             },
             message: 'Invalid URL format.',
         },
@@ -23,5 +20,3 @@ const fullMockTestSchema = new mongoose.Schema({
         default: false,
     },
 }, { timestamps: true });
-
-module.exports = mongoose.model('FullMockTest', fullMockTestSchema);

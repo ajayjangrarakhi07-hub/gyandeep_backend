@@ -26,23 +26,23 @@ exports.getTestBySubjectName = async (req, res) => {
     }
 };
 
-// Controller to add a new test
+
 exports.addNewTest = async (req, res) => {
     try {
         const { testSubjectName, urlLinkOfTest, isTestLive } = req.body;
 
-        // Check if all required fields are provided
+        // Check required fields
         if (!testSubjectName || !urlLinkOfTest) {
-            return res.status(400).json({ error: 'Test subject name and URL link of test are required.' });
+            return res.status(400).json({ error: 'testSubjectName and urlLinkOfTest are required fields.' });
         }
 
-        // Create and save the new test
+        // Create and save new test
         const newTest = new FullMockTest({ testSubjectName, urlLinkOfTest, isTestLive });
         await newTest.save();
 
         res.status(201).json({ message: 'Test added successfully.', test: newTest });
     } catch (error) {
-        console.error(error);
+        console.error('Error in addNewTest controller:', error);
         if (error.code === 11000) {
             res.status(400).json({ error: 'Test subject name must be unique.' });
         } else {
