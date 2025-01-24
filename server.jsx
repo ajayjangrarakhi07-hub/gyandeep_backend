@@ -45,9 +45,13 @@ app.use('/api', getSubjectsSummary); // Use new route
 
 app.use('/api', discussionRoutes);
 
-// Routes
-app.use('/api/fullMockTest', fullMockTestRoutes);
-app.use('/apl/add-mock-test', addNewTest);
+
+app.use('/api', fullMockTestRoutes);
+app.use('/api/add-mock-test', addNewTest);
+
+
+
+
 
 
 app.post('/api/submit-data', async (req, res) => {
