@@ -7,10 +7,10 @@ const {
 
 const router = express.Router();
 
-// Fetch all test subject names
+// Route to fetch all test subject names
 router.get('/test-subjects', getAllTestSubjects);
 
-// Fetch test details by subject name
+// Route to fetch test details by subject name
 router.get('/test/:testSubjectName', getTestBySubjectName);
 
 // Admin route to add a new test

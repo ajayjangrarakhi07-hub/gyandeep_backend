@@ -1,18 +1,19 @@
 const mongoose = require('mongoose');
 
+// Define the schema for FullMockTest
 const fullMockTestSchema = new mongoose.Schema({
     testSubjectName: {
         type: String,
-        required: true,
+        required: [true, 'Test subject name is required.'],
         unique: true,
         trim: true,
     },
     urlLinkOfTest: {
         type: String,
-        required: true,
+        required: [true, 'URL link of test is required.'],
         validate: {
             validator: function (v) {
-                return /^https?:\/\/.+/.test(v);
+                return /^https?:\/\/.+/.test(v); // Validates that the URL starts with http or https
             },
             message: 'Invalid URL format.',
         },
