@@ -13,6 +13,9 @@ const getSubjectsSummary = require('./routes/subjecstRoutes');
 // Import routes
 const discussionRoutes = require('./routes/discussionRoutes');
 
+// Import routes
+const fullMockTestRoutes = require('./routes/fullMockTestRoutes');
+
 
 dotenv.config();
 
@@ -40,7 +43,8 @@ app.use('/api', getSubjectsSummary); // Use new route
 
 app.use('/api', discussionRoutes);
 
-
+// Routes
+app.use('/api/fullMockTest', fullMockTestRoutes);
 
 
 app.post('/api/submit-data', async (req, res) => {
