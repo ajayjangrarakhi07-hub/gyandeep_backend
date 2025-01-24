@@ -47,7 +47,7 @@ app.use('/api', discussionRoutes);
 
 
 app.use('/api', fullMockTestRoutes);
-app.use('/api/add-mock-test', addNewTest);
+app.use('/api', addNewTest);
 
 
 
