@@ -1,5 +1,30 @@
 const FullMockTest = require('../models/fullMockTest');
 
+
+
+//  Controller to fetch all mock tests
+
+exports.getAllMockTests = async (req, res) => {
+    try {
+        // Fetch all mock tests from the database
+        const mockTests = await FullMockTest.find().sort({ createdAt: -1 });
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            message: 'Mock tests fetched successfully',
+            data: mockTests,
+        });
+    } catch (error) {
+        console.error('Error fetching mock tests:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching mock tests',
+            error: error.message,
+        });
+    }
+};
+
 // Controller to fetch all test subject names
 exports.getAllTestSubjects = async (req, res) => {
     try {

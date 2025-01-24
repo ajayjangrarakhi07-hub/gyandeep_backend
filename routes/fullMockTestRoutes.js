@@ -7,6 +7,10 @@ const {
 
 const router = express.Router();
 
+// Router to fetch all mock test all Data
+ 
+router.get('/all-mock-test-data', getAllMockTests);
+
 // Route to fetch all test subject names
 router.get('/mock-test-subjects', getAllTestSubjects);
 
