@@ -16,7 +16,7 @@ const discussionRoutes = require('./routes/discussionRoutes');
 
 // Import routes
 const fullMockTestRoutes = require('./routes/fullMockTestRoutes');
-const addNewTest = require('./routes/fullMockTestRoutes');
+ 
 
 
 dotenv.config();
@@ -45,9 +45,7 @@ app.use('/api', getSubjectsSummary); // Use new route
 
 app.use('/api', discussionRoutes);
 
-
 app.use('/api', fullMockTestRoutes);
-app.use('/api', addNewTest);
 
 
 
