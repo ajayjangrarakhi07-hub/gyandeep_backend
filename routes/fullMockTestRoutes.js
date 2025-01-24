@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+    getAllMockTests,
     getAllTestSubjects,
     getTestBySubjectName,
     addNewTest,
