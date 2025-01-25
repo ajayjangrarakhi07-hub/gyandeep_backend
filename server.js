@@ -54,9 +54,7 @@ app.use('/api', fullMockTestRoutes);
 
 app.use('/api', paidUserRoutes);
 
- 
- 
-
+// whole app is free(true) or paid(false) 
 app.use("/api", statusRoutes);
 
 
