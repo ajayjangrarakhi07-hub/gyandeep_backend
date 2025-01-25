@@ -17,7 +17,7 @@ const discussionRoutes = require('./routes/discussionRoutes');
 // Import routes
 const fullMockTestRoutes = require('./routes/fullMockTestRoutes');
  
-
+const paidUserRoutes = require('./routes/paidUserRoutes');
 
 dotenv.config();
 
@@ -46,6 +46,8 @@ app.use('/api', getSubjectsSummary); // Use new route
 app.use('/api', discussionRoutes);
 
 app.use('/api', fullMockTestRoutes);
+
+app.use('/api', paidUserRoutes);
 
 
 
