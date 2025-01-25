@@ -51,6 +51,22 @@ app.use('/api', paidUserRoutes);
 
 
 
+// API endpoint to set isPaidUser value
+app.post('/set-the-ispaid-user-value', (req, res) => {
+    const { isPaidUser } = req.body;
+
+    if (typeof isPaidUser !== 'boolean') {
+        return res.status(400).json({ message: 'Invalid isPaidUser value. It must be a boolean.' });
+    }
+
+    user.isPaidUser = isPaidUser;
+    return res.status(200).json({ message: 'isPaidUser value updated successfully.', user });
+});
+
+// API endpoint to get the current isPaidUser value
+app.get('/get-the-ispaid-user-value', (req, res) => {
+    return res.status(200).json({ user });
+});
 
 
 

@@ -27,6 +27,8 @@ exports.verifyPaidUser = async (req, res) => {
     }
 };
 
+
+
 // Add a new paid user
 exports.addPaidUser = async (req, res) => {
     const { email, mobileNumber } = req.body;
