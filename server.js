@@ -62,7 +62,7 @@ app.use('/api', paidUserRoutes);
 app.use("/api", statusRoutes);
  
  
-app.use('/api/carousel', carouselRoutes);
+app.use('/api', carouselRoutes);
 
 
 
