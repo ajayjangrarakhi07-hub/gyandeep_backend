@@ -64,9 +64,11 @@ app.use('/api', paidUserRoutes);
 
 // whole app is free(true) or paid(false) 
 app.use("/api", statusRoutes);
+
+
  
- 
-app.use('/api', carouselRoutes);
+app.use('/api', carouselRoutes); // Make sure the router is added to the correct path
+
 
 
 
