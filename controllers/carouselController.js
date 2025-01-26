@@ -4,11 +4,14 @@ const Carousel = require('../models/Carousel');
 exports.getCarouselItems = async (req, res) => {
     try {
         const items = await Carousel.find();
+        console.log('Carousel items fetched:', items); // Add this line for debugging
         res.status(200).json(items);
     } catch (error) {
+        console.error('Error fetching carousel items:', error); // Add this line for debugging
         res.status(500).json({ message: 'Failed to fetch carousel items', error });
     }
 };
+
 
 // Add a new carousel item
 exports.addCarouselItem = async (req, res) => {

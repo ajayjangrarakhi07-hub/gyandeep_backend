@@ -63,7 +63,13 @@ app.use('/api', paidUserRoutes);
 app.use("/api", statusRoutes);
  
  
-app.use('/api/carousel/', carouselRoutes);
+app.use('/api', carouselRoutes);
+
+
+
+
+
+
 
 
 
@@ -88,7 +94,6 @@ app.post('/api/submit-data', async (req, res) => {
 });
 
 
-
 // Express route for updating a lesson with new categories
 app.put('/api/update-lesson/:name', async (req, res) => {
     const subjectName = req.params.name;
@@ -105,6 +110,8 @@ app.put('/api/update-lesson/:name', async (req, res) => {
         res.status(500).json({ message: 'Failed to update lesson categories', error });
     }
 });
+
+
 
 
 
