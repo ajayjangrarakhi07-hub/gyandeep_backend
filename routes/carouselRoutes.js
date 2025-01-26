@@ -4,9 +4,9 @@ const { getCarouselItems, addCarouselItem } = require('../controllers/carouselCo
 const router = express.Router();
 
 // Get all carousel items
-router.get('/get-carousel-items', getCarouselItems);
+router.get('/', getCarouselItems);
 
 // Add a new carousel item
-router.post('/set-carousel-items', addCarouselItem);
+router.post('/', addCarouselItem);
 
 module.exports = router;
