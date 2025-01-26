@@ -1,10 +1,10 @@
 {
   "name": "haryanacetgyandeep",
-  "version": "1.0.0",
+  "version": "1.0.9",
   "description": "Prepare, Practice, Perform – Boost with Confidence!",
-  "main": "server.jsx",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.jsx",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

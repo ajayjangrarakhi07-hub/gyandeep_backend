@@ -23,6 +23,10 @@ const paidUserRoutes = require('./routes/paidUserRoutes');
 const statusRoutes = require("./routes/statusRoutes");
 
 
+const carouselRoutes = require('./routes/carouselRoutes');
+
+
+
 
 dotenv.config();
 
@@ -56,6 +60,9 @@ app.use('/api', paidUserRoutes);
 
 // whole app is free(true) or paid(false) 
 app.use("/api", statusRoutes);
+ 
+ 
+app.use('/api', carouselRoutes);
 
 
 
