@@ -4,17 +4,21 @@ const mongoose = require('mongoose');
 const questionSchema = new mongoose.Schema({
     question_number: { type: Number, required: true },
     question: { type: String, required: true },
-    options: {
-        type: [String], // Array of strings for options
+    option1: { type: String, required: true },
+    option2: { type: String, required: true },
+    option3: { type: String, required: true },
+    option4: { type: String, required: true },
+    correctAnswer: {
+        type: String,
+        required: true,
         validate: {
             validator: function (v) {
-                return v.length === 4; // Ensures exactly 4 options
+                // Ensure the correctAnswer matches one of the options
+                return [this.option1, this.option2, this.option3, this.option4].includes(v);
             },
-            message: 'Exactly 4 options are required.',
+            message: 'Correct answer must match one of the options.',
         },
-        required: true,
     },
-    correctAnswer: { type: String, required: true }, // Must match one of the options
     description: { type: String, required: true },
 });
 
