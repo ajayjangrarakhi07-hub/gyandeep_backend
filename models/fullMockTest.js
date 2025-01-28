@@ -1,5 +1,23 @@
 const mongoose = require('mongoose');
 
+// Define the schema for questions
+const questionSchema = new mongoose.Schema({
+    question_number: { type: Number, required: true },
+    question: { type: String, required: true },
+    options: {
+        type: [String], // Array of strings for options
+        validate: {
+            validator: function (v) {
+                return v.length === 4; // Ensures exactly 4 options
+            },
+            message: 'Exactly 4 options are required.',
+        },
+        required: true,
+    },
+    correctAnswer: { type: String, required: true }, // Must match one of the options
+    description: { type: String, required: true },
+});
+
 // Define the schema for FullMockTest
 const fullMockTestSchema = new mongoose.Schema({
     testSubjectName: {
@@ -22,7 +40,7 @@ const fullMockTestSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    questions: [questionSchema], // Embed the questions schema
 }, { timestamps: true });
-
 
 module.exports = mongoose.model('FullMockTest', fullMockTestSchema);
