@@ -71,7 +71,6 @@ const getQuizByEmailAndTopic = async (req, res) => {
     }
 
     try {
-        // Find quiz by emailId and testName
         const quiz = await QuizResult.findOne({ userEmail, testName });
 
         if (!quiz) {
