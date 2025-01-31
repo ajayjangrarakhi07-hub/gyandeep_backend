@@ -63,7 +63,7 @@ const getQuizResults = async (req, res) => {
 };
 
 // Controller to fetch quiz by emailId and topicName
-exports.getQuizByEmailAndTopic = async (req, res) => {
+const getQuizByEmailAndTopic = async (req, res) => {
     const { emailId, topicName } = req.query;
 
     if (!emailId || !topicName) {
@@ -85,4 +85,4 @@ exports.getQuizByEmailAndTopic = async (req, res) => {
     }
 };
 
-module.exports = { saveQuizResult, getQuizResults };
+module.exports = { saveQuizResult, getQuizResults, getQuizByEmailAndTopic };
