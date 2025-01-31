@@ -62,17 +62,17 @@ const getQuizResults = async (req, res) => {
     }
 };
 
-// Controller to fetch quiz by emailId and topicName
+// Controller to fetch quiz by emailId and testName
 const getQuizByEmailAndTopic = async (req, res) => {
-    const { userEmail, topicName } = req.query;
+    const { userEmail, testName } = req.query;
 
-    if (!userEmail || !topicName) {
-        return res.status(400).json({ error: 'userEmail and topicName are required' });
+    if (!userEmail || !testName) {
+        return res.status(400).json({ error: 'userEmail and testName are required' });
     }
 
     try {
-        // Find quiz by emailId and topicName
-        const quiz = await QuizResult.findOne({ userEmail, topicName });
+        // Find quiz by emailId and testName
+        const quiz = await QuizResult.findOne({ userEmail, testName });
 
         if (!quiz) {
             return res.status(404).json({ message: 'No quiz found for this userEmail and topic' });
