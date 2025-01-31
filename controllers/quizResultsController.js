@@ -71,15 +71,16 @@ const getQuizByEmailAndTopic = async (req, res) => {
     }
 
     try {
-        const quiz = await QuizResult.findOne({ userEmail, testName });
+        // Use find() instead of findOne() to return all matching quizzes
+        const quizzes = await QuizResult.find({ userEmail, testName });
 
-        if (!quiz) {
-            return res.status(404).json({ message: 'No quiz found for this userEmail and topic' });
+        if (!quizzes || quizzes.length === 0) {
+            return res.status(404).json({ message: 'No quiz found for this userEmail and testName' });
         }
 
-        return res.status(200).json(quiz);  // Send the quiz data back to the client
+        return res.status(200).json(quizzes);  // Send the array of quizzes
     } catch (error) {
-        console.error('Error fetching quiz:', error);
+        console.error('Error fetching quizzes:', error);
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
