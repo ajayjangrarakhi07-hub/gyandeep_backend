@@ -62,4 +62,27 @@ const getQuizResults = async (req, res) => {
     }
 };
 
+// Controller to fetch quiz by emailId and topicName
+exports.getQuizByEmailAndTopic = async (req, res) => {
+    const { emailId, topicName } = req.query;
+
+    if (!emailId || !topicName) {
+        return res.status(400).json({ error: 'emailId and topicName are required' });
+    }
+
+    try {
+        // Find quiz by emailId and topicName
+        const quiz = await QuizResult.findOne({ emailId, topicName });
+
+        if (!quiz) {
+            return res.status(404).json({ message: 'No quiz found for this email and topic' });
+        }
+
+        return res.status(200).json(quiz);  // Send the quiz data back to the client
+    } catch (error) {
+        console.error('Error fetching quiz:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports = { saveQuizResult, getQuizResults };
