@@ -1,4 +1,4 @@
-/ models/TestSeriesName.js
+// models/TestSeriesName.js
 const mongoose = require('mongoose');
 
 const testSeriesSchema = new mongoose.Schema({
