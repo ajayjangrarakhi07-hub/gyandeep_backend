@@ -2,14 +2,21 @@ const FullMockTest = require('../models/fullMockTest');
 
 
 
-//  Controller to fetch all mock tests
-
+//  Controller to fetch all mock tests by testSeriesName  for that partticular 
 exports.getAllMockTests = async (req, res) => {
     try {
-        // Fetch all mock tests from the database
-        const mockTests = await FullMockTest.find().sort({ createdAt: -1 });
+        const { testSeriesName } = req.query;
+        let query = {};
 
-        // Send the response
+        // If testSeriesName is provided, filter results
+        if (testSeriesName) {
+            query.testSubjectName = { $regex: new RegExp(testSeriesName, 'i') }; // Case-insensitive match
+        }
+
+        // Fetch filtered mock tests from the database
+        const mockTests = await FullMockTest.find(query).sort({ createdAt: -1 });
+
+        // Send response
         res.status(200).json({
             success: true,
             message: 'Mock tests fetched successfully',
@@ -24,6 +31,8 @@ exports.getAllMockTests = async (req, res) => {
         });
     }
 };
+
+
 
 // Controller to fetch all test subject names
 exports.getAllTestSubjects = async (req, res) => {
