@@ -1,11 +1,13 @@
 const QuizResult = require('../models/QuizResult');
+ 
+
 
 const saveQuizResult = async (req, res) => {
     try {
-        const { testName, topicName, score, incorrect, userName, userEmail, userAttemptedList = [] } = req.body;
+        let { testName, topicName, score, incorrect, userName, userEmail, userAttemptedList = [] } = req.body;
 
         // Validate required fields
-        if (!testName || !topicName || score === undefined || incorrect === undefined || !userName || !userEmail) {
+        if (!testName || !topicName || !score || incorrect === undefined|| !userName || !userEmail) {
             return res.status(400).json({ message: 'Missing required fields.' });
         }
 
@@ -14,13 +16,27 @@ const saveQuizResult = async (req, res) => {
             return res.status(400).json({ message: 'userAttemptedList must be an array.' });
         }
 
+        // Trim and validate email
+        userEmail = userEmail.trim().toLowerCase();
+
+        // Ensure `score` is a string
+        if (typeof score !== 'string') {
+            return res.status(400).json({ message: 'Score must be a string (e.g., "1/100").' });
+        }
+
+        // Convert `incorrect` to a number
+        incorrect = Number(incorrect);
+        if (isNaN(incorrect)) {
+            return res.status(400).json({ message: 'Incorrect must be a number.' });
+        }
+
         // Check if a quiz result already exists for the same user and topic
         let existingResult = await QuizResult.findOne({ userEmail, topicName });
 
         if (existingResult) {
             // Update existing record
             existingResult.score = score;
-            existingResult.incorrect = incorrect; // Now taking input instead of calculating
+            existingResult.incorrect = incorrect;
             existingResult.userAttemptedList = userAttemptedList;
             existingResult.updatedAt = new Date();
 
