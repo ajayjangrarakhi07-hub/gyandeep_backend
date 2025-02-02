@@ -2,22 +2,25 @@ const QuizResult = require('../models/QuizResult');
 
 const saveQuizResult = async (req, res) => {
     try {
-        const { testName, topicName, score, userName, userEmail, userAttemptedList } = req.body;
+        const { testName, topicName, score, incorrect, userName, userEmail, userAttemptedList = [] } = req.body;
 
         // Validate required fields
-        if (!testName || !topicName || score === undefined || !userName || !userEmail || !userAttemptedList) {
+        if (!testName || !topicName || score === undefined || incorrect === undefined || !userName || !userEmail) {
             return res.status(400).json({ message: 'Missing required fields.' });
         }
 
-        const incorrect = userAttemptedList.length - score; // Calculate incorrect answers
+        // Ensure `userAttemptedList` is an array
+        if (!Array.isArray(userAttemptedList)) {
+            return res.status(400).json({ message: 'userAttemptedList must be an array.' });
+        }
 
         // Check if a quiz result already exists for the same user and topic
-        const existingResult = await QuizResult.findOne({ userEmail, topicName });
+        let existingResult = await QuizResult.findOne({ userEmail, topicName });
 
         if (existingResult) {
             // Update existing record
             existingResult.score = score;
-            existingResult.incorrect = incorrect;
+            existingResult.incorrect = incorrect; // Now taking input instead of calculating
             existingResult.userAttemptedList = userAttemptedList;
             existingResult.updatedAt = new Date();
 
@@ -37,11 +40,12 @@ const saveQuizResult = async (req, res) => {
                 userAttemptedList,
                 userName,
                 userEmail,
+                updatedAt: new Date(),
             });
 
             const savedResult = await newQuizResult.save();
 
-            return res.status(200).json({
+            return res.status(201).json({
                 message: 'Quiz result saved successfully!',
                 data: savedResult,
             });
@@ -51,6 +55,7 @@ const saveQuizResult = async (req, res) => {
         res.status(500).json({ message: 'Error saving quiz result.', error });
     }
 };
+
 
 // Get quiz results by email
 const getQuizResults = async (req, res) => {
