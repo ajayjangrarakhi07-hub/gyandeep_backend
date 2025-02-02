@@ -1,16 +1,17 @@
 const FullMockTest = require('../models/fullMockTest');
 
 
+const FullMockTest = require('../models/fullMockTest'); // Import FullMockTest model
 
-//  Controller to fetch all mock tests by testSeriesName  for that partticular 
+// Controller to fetch all mock tests by testSeriesName
 exports.getAllMockTests = async (req, res) => {
     try {
         const { testSeriesName } = req.query;
         let query = {};
 
-        // If testSeriesName is provided, filter results
+        // If testSeriesName is provided, filter results by testSeriesName
         if (testSeriesName) {
-            query.testSubjectName = { $regex: new RegExp(testSeriesName, 'i') }; // Case-insensitive match
+            query.testSeriesName = { $regex: new RegExp(testSeriesName, 'i') }; // Case-insensitive match
         }
 
         // Fetch filtered mock tests from the database
@@ -31,6 +32,7 @@ exports.getAllMockTests = async (req, res) => {
         });
     }
 };
+
 
 
 
