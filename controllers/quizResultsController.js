@@ -1,23 +1,24 @@
 const QuizResult = require('../models/QuizResult');
 
-
 const saveQuizResult = async (req, res) => {
     try {
-        const { testName, topicName, score, userName, userEmail } = req.body;
+        const { testName, topicName, score, userName, userEmail, userAttemptedList } = req.body;
 
         // Validate required fields
-        if (!testName || !topicName || !score || !userName || !userEmail) {
+        if (!testName || !topicName || score === undefined || !userName || !userEmail || !userAttemptedList) {
             return res.status(400).json({ message: 'Missing required fields.' });
         }
+
+        const incorrect = userAttemptedList.length - score; // Calculate incorrect answers
 
         // Check if a quiz result already exists for the same user and topic
         const existingResult = await QuizResult.findOne({ userEmail, topicName });
 
         if (existingResult) {
-            // Clear the previous score (if necessary, explicitly set to 0 or null)
-            existingResult.score = 0; // Clear previous score
-            // Now, update with the new score
+            // Update existing record
             existingResult.score = score;
+            existingResult.incorrect = incorrect;
+            existingResult.userAttemptedList = userAttemptedList;
             existingResult.updatedAt = new Date();
 
             const updatedResult = await existingResult.save();
@@ -32,6 +33,8 @@ const saveQuizResult = async (req, res) => {
                 testName,
                 topicName,
                 score,
+                incorrect,
+                userAttemptedList,
                 userName,
                 userEmail,
             });
