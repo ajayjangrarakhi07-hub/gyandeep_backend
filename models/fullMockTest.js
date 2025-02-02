@@ -2,7 +2,13 @@ const mongoose = require('mongoose');
 
 // Define the schema for questions
 const questionSchema = new mongoose.Schema({
-    question_number: { type: Number, required: true },
+    question_number: {
+        type: Number,
+        required: true,
+        default: function () {
+            return this.parent().questions.length + 1; // Auto-increment question number
+        }
+    },
     question: { type: String, required: true },
     option1: { type: String, required: true },
     option2: { type: String, required: true },
@@ -13,7 +19,7 @@ const questionSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (v) {
-                // Ensure the correctAnswer matches one of the options
+                // Ensure correctAnswer matches one of the options
                 return [this.option1, this.option2, this.option3, this.option4].includes(v);
             },
             message: 'Correct answer must match one of the options.',
@@ -24,10 +30,14 @@ const questionSchema = new mongoose.Schema({
 
 // Define the schema for FullMockTest
 const fullMockTestSchema = new mongoose.Schema({
+    testSeriesName: { // Added test series name for better filtering
+        type: String,
+        required: [true, 'Test series name is required.'],
+        trim: true,
+    },
     testSubjectName: {
         type: String,
         required: [true, 'Test subject name is required.'],
-        unique: true,
         trim: true,
     },
     urlLinkOfTest: {
@@ -35,7 +45,7 @@ const fullMockTestSchema = new mongoose.Schema({
         required: [true, 'URL link of test is required.'],
         validate: {
             validator: function (v) {
-                return /^https?:\/\/.+/.test(v); // Validates URL format
+                return /^(https?:\/\/)([^\s$.?#].[^\s]*)$/.test(v); // Improved URL validation
             },
             message: 'Invalid URL format.',
         },
