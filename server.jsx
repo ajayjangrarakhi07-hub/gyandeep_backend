@@ -25,6 +25,8 @@ const statusRoutes = require("./routes/statusRoutes");
 
 const carouselRoutes = require('./routes/carouselRoutes');
 
+const testSeriesRoutes = require('./routes/testSeriesRoutes');
+
 
 
 
@@ -64,6 +66,9 @@ app.use('/api', paidUserRoutes);
 
 // whole app is free(true) or paid(false) 
 app.use("/api", statusRoutes);
+
+
+app.use('/api', testSeriesRoutes);
 
 
  
