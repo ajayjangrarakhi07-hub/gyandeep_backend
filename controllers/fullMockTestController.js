@@ -1,8 +1,5 @@
 const FullMockTest = require('../models/fullMockTest');
-
-
-const FullMockTest = require('../models/fullMockTest'); // Import FullMockTest model
-
+ 
 // Controller to fetch all mock tests by testSeriesName
 exports.getAllMockTests = async (req, res) => {
     try {
@@ -32,7 +29,6 @@ exports.getAllMockTests = async (req, res) => {
         });
     }
 };
-
 
 
 
