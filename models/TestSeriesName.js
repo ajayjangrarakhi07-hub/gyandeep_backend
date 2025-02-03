@@ -9,6 +9,10 @@ const testSeriesSchema = new mongoose.Schema({
     testTimeDuration: {
         type: Number, // Store duration in seconds (e.g., 7200 for 2 hours)
         required: true
+    },
+    negativeMarking: {
+        type: Number, // Example: 0.25 for 1/4th negative marking
+        default: 0 // Default value is 0 (no negative marking)
     }
 });
 
