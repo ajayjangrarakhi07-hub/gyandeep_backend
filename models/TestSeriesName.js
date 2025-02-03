@@ -13,6 +13,11 @@ const testSeriesSchema = new mongoose.Schema({
     negativeMarking: {
         type: Number, // Example: 0.25 for 1/4th negative marking
         default: 0 // Default value is 0 (no negative marking)
+    },
+    totalMockTests: {
+        type: Number, // Total number of mock tests in the test series
+        required: true,
+        min: 1 // Ensure at least one mock test is available
     }
 });
 
