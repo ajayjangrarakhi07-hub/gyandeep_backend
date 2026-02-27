@@ -1,88 +1,152 @@
 const QuizResult = require('../models/QuizResult');
  
 
-
 const saveQuizResult = async (req, res) => {
     try {
-        let { testName, topicName, score, incorrect, userName, userEmail, userAttemptedList = [] } = req.body;
 
-        // Validate required fields
-        if (!testName || !topicName || !score || incorrect === undefined|| !userName || !userEmail) {
-            return res.status(400).json({ message: 'Missing required fields.' });
+        let {
+            testName,
+            topicName,
+            score,
+            incorrect,
+            userName,
+            userEmail,
+            totalQuestions,
+            timeTaken = 0,
+            userAttemptedList = []
+        } = req.body;
+
+        if (!testName || !topicName || !score || !userEmail || !userName) {
+            return res.status(400).json({ message: "Missing fields" });
         }
 
-        // Ensure `userAttemptedList` is an array
-        if (!Array.isArray(userAttemptedList)) {
-            return res.status(400).json({ message: 'userAttemptedList must be an array.' });
-        }
-
-        // Trim and validate email
         userEmail = userEmail.trim().toLowerCase();
+        testName = testName.trim();
+        topicName = topicName.trim();
 
-        // Ensure `score` is a string
-        if (typeof score !== 'string') {
-            return res.status(400).json({ message: 'Score must be a string (e.g., "1/100").' });
-        }
-
-        // Convert `incorrect` to a number
         incorrect = Number(incorrect);
-        if (isNaN(incorrect)) {
-            return res.status(400).json({ message: 'Incorrect must be a number.' });
+        totalQuestions = Number(totalQuestions);
+
+        // ✅ Extract Correct Answers from score "80/100"
+        const correctAnswers = Number(score.split('/')[0]);
+
+        // ✅ Accuracy Calculation
+        const accuracy =
+            totalQuestions > 0
+                ? ((correctAnswers / totalQuestions) * 100).toFixed(2)
+                : 0;
+
+        // ✅ Weak Topic Detection
+        let weakTopics = [];
+        if (accuracy < 50) {
+            weakTopics.push(topicName);
         }
 
-        // Check if a quiz result already exists for the same user and topic
-        let existingResult = await QuizResult.findOne({ userEmail, topicName });
+        // ==========================
+        // ✅ LIVE RANK CALCULATION
+        // ==========================
+        const betterUsers = await QuizResult.countDocuments({
+            testName,
+            correctAnswers: { $gt: correctAnswers }
+        });
+
+        const rank = betterUsers + 1;
+
+        // ✅ Percentile
+        const totalStudents =
+            await QuizResult.countDocuments({ testName });
+
+        const percentile =
+            totalStudents > 0
+                ? (((totalStudents - rank) / totalStudents) * 100).toFixed(2)
+                : 0;
+
+        // ✅ Rank Prediction (Simple AI Logic)
+        const predictedRank =
+            Math.max(1, Math.round(rank - accuracy / 10));
+
+        // ==========================
+        // CHECK EXISTING RESULT
+        // ==========================
+        let existingResult =
+            await QuizResult.findOne({ userEmail, topicName });
 
         if (existingResult) {
-            // Update existing record
+
             existingResult.score = score;
+            existingResult.correctAnswers = correctAnswers;
+            existingResult.totalQuestions = totalQuestions;
             existingResult.incorrect = incorrect;
+            existingResult.accuracy = accuracy;
+            existingResult.rank = rank;
+            existingResult.percentile = percentile;
+            existingResult.predictedRank = predictedRank;
+            existingResult.timeTaken = timeTaken;
+            existingResult.weakTopics = weakTopics;
             existingResult.userAttemptedList = userAttemptedList;
             existingResult.updatedAt = new Date();
 
-            const updatedResult = await existingResult.save();
+            const updated = await existingResult.save();
 
             return res.status(200).json({
-                message: 'Quiz result updated successfully!',
-                data: updatedResult,
+                message: "Quiz Updated Successfully",
+                data: updated
             });
+
         } else {
-            // Create a new quiz result if not found
-            const newQuizResult = new QuizResult({
+
+            const newResult = new QuizResult({
                 testName,
                 topicName,
                 score,
                 incorrect,
+                correctAnswers,
+                totalQuestions,
+                accuracy,
+                rank,
+                percentile,
+                predictedRank,
+                weakTopics,
+                timeTaken,
                 userAttemptedList,
                 userName,
-                userEmail,
-                updatedAt: new Date(),
+                userEmail
             });
 
-            const savedResult = await newQuizResult.save();
+            const saved = await newResult.save();
 
             return res.status(201).json({
-                message: 'Quiz result saved successfully!',
-                data: savedResult,
+                message: "Quiz Saved Successfully",
+                data: saved
             });
         }
+
     } catch (error) {
-        console.error('Error saving quiz result:', error);
-        res.status(500).json({ message: 'Error saving quiz result.', error });
+        console.error(error);
+        res.status(500).json({
+            message: "Server Error",
+            error
+        });
     }
 };
-
-
+ 
 // Get quiz results by email
+// Get all quiz results by email
 const getQuizResults = async (req, res) => {
-    const { userEmail } = req.query; // Get userEmail from query params
+    const { userEmail } = req.query;
+
     try {
-        // Find quiz results matching the email, sorted by date (newest first)
-        const results = await QuizResult.find({ userEmail : userEmail }).sort({ date: -1 });
-        res.status(200).json(results);
+        const results = await QuizResult.find({
+            userEmail: userEmail.trim().toLowerCase()
+        }).sort({ createdAt: -1 });
+
+        res.status(200).json(results || []);
+
     } catch (error) {
-        console.error('Error fetching quiz results:', error);
-        res.status(500).json({ message: 'Error fetching quiz results.', error });
+        console.error(error);
+        res.status(500).json({
+            message: 'Error fetching quiz results'
+        });
     }
 };
 
@@ -91,21 +155,28 @@ const getQuizByEmailAndTopic = async (req, res) => {
     const { userEmail, testName } = req.query;
 
     if (!userEmail || !testName) {
-        return res.status(400).json({ error: 'userEmail and testName are required' });
+        return res.status(400).json({
+            error: 'userEmail and testName are required'
+        });
     }
 
     try {
-        // Use find() instead of findOne() to return all matching quizzes
-        const quizzes = await QuizResult.find({ userEmail, testName });
 
-        if (!quizzes || quizzes.length === 0) {
-            return res.status(404).json({ message: 'No quiz found for this userEmail and testName' });
-        }
+        const quizzes = await QuizResult.find({
+            userEmail: userEmail.trim().toLowerCase(),
+            testName: {
+                $regex: new RegExp(`^${testName.trim()}$`, "i")
+            }
+        }).sort({ createdAt: -1 });
 
-        return res.status(200).json(quizzes);  // Send the array of quizzes
+        // ✅ NEVER send 404 for empty data in mobile apps
+        return res.status(200).json(quizzes || []);
+
     } catch (error) {
         console.error('Error fetching quizzes:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({
+            error: 'Internal server error'
+        });
     }
 };
 
