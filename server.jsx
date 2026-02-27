@@ -29,6 +29,9 @@ const testSeriesRoutes = require('./routes/testSeriesRoutes');
 
 
 
+const paymentRoutes = require("./routes/paymentRoutes");
+
+
 
 
 dotenv.config();
@@ -75,6 +78,7 @@ app.use('/api', testSeriesRoutes);
 app.use('/api', carouselRoutes); // Make sure the router is added to the correct path
 
 
+app.use("/api", paymentRoutes);
 
 
 
