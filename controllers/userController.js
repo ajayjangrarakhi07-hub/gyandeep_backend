@@ -2,32 +2,22 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const { v4: uuidv4 } = require("uuid");
 
-
- 
-
 /* ================= CHECK DEVICE ================= */
-
 exports.checkDevice = async (req, res) => {
-
     try {
 
         const { deviceId } = req.body;
 
-        const existingDevice =
-            await User.findOne({ deviceId });
+        const existingDevice = await User.findOne({ deviceId });
 
         if (existingDevice) {
-            return res.status(200).json({
-                exists: true
-            });
+            return res.status(200).json({ exists: true });
         }
 
-        res.json({ exists: false });
+        return res.json({ exists: false });
 
     } catch (error) {
-        res.status(500).json({
-            message: "Server Error"
-        });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -51,7 +41,6 @@ exports.registerUser = async (req, res) => {
         } = req.body;
 
         /* ===== VALIDATION ===== */
-
         if (
             !uid ||
             !fullName ||
@@ -64,35 +53,23 @@ exports.registerUser = async (req, res) => {
             !profileImage ||
             !deviceId
         ) {
-            return res.status(400).json({
-                message: "All fields required"
-            });
+            return res.status(400).json({ message: "All fields required" });
         }
 
         /* ===== CHECK EXIST USER ===== */
-
-        const exist = await User.findOne({ email });
-
+        const exist = await User.findOne({ email: email.toLowerCase() });
         if (exist) {
-            return res.status(400).json({
-                message: "User already exists"
-            });
+            return res.status(400).json({ message: "User already exists" });
         }
 
         /* ===== HASH PASSWORD ===== */
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 12);
 
         /* ===== REFERRAL SYSTEM ===== */
-
         let coins = 0;
 
         if (referral) {
-            const refUser = await User.findOne({
-                referralCode: referral
-            });
-
+            const refUser = await User.findOne({ referralCode: referral });
             if (refUser) {
                 refUser.coins += 50;
                 await refUser.save();
@@ -101,19 +78,15 @@ exports.registerUser = async (req, res) => {
         }
 
         /* ===== CREATE REF CODE ===== */
-
-        const myReferral = uuidv4()
-            .slice(0, 6)
-            .toUpperCase();
+        const myReferral = uuidv4().slice(0, 6).toUpperCase();
 
         /* ===== CREATE USER ===== */
-
         const newUser = new User({
             uid,
             fullName,
             mobile,
             email: email.toLowerCase(),
-            password: hashedPassword,   // 🔐 encrypted
+            password: hashedPassword,
             state: state || "Haryana",
             district,
             village,
@@ -126,7 +99,7 @@ exports.registerUser = async (req, res) => {
 
         await newUser.save();
 
-        res.json({
+        return res.status(201).json({
             success: true,
             message: "Account Created",
             referralCode: myReferral
@@ -136,24 +109,21 @@ exports.registerUser = async (req, res) => {
 
         console.log("REGISTER ERROR:", err);
 
-        // Duplicate key error
         if (err.code === 11000) {
 
             if (err.keyPattern.email) {
-                return res.status(400).json({
-                    message: "Email already exists"
-                });
+                return res.status(400).json({ message: "Email already exists" });
             }
 
             if (err.keyPattern.deviceId) {
-                return res.status(400).json({
-                    message: "Device already registered"
-                });
+                return res.status(400).json({ message: "Device already registered" });
+            }
+
+            if (err.keyPattern.uid) {
+                return res.status(400).json({ message: "UID already exists" });
             }
         }
 
-        res.status(500).json({
-            message: "Server Error"
-        });
+        return res.status(500).json({ message: "Server Error" });
     }
 };

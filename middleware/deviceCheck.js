@@ -6,12 +6,12 @@ const deviceCheck = async (req, res, next) => {
 
         const { email, deviceId } = req.body;
 
-        const user = await User.findOne({ email });
+        if (!email) return next();
 
-        /* Allow signup if user not exist */
+        const user = await User.findOne({ email: email.toLowerCase() });
+
         if (!user) return next();
 
-        /* Block only existing login */
         if (user.deviceId !== deviceId) {
             return res.status(403).json({
                 success: false,
@@ -22,7 +22,7 @@ const deviceCheck = async (req, res, next) => {
         next();
 
     } catch (err) {
-        next();
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
