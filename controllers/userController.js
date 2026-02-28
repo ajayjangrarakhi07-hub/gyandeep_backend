@@ -104,11 +104,36 @@ exports.registerUser = async (req, res) => {
 
     } catch (err) {
 
-        console.log("🔥 FULL REGISTER ERROR:");
-        console.log(err);
-        console.log("ERROR CODE:", err.code);
-        console.log("KEY PATTERN:", err.keyPattern);
+        // Duplicate key error
+        if (err.code === 11000) {
 
+            if (err.keyPattern?.email) {
+                return res.status(400).json({
+                    message: "Email already exists"
+                });
+            }
+
+            if (err.keyPattern?.deviceId) {
+                return res.status(400).json({
+                    message: "Device already registered"
+                });
+            }
+
+            if (err.keyPattern?.uid) {
+                return res.status(400).json({
+                    message: "UID already exists"
+                });
+            }
+        }
+
+        // Mongoose validation error
+        if (err.name === "ValidationError") {
+            return res.status(400).json({
+                message: Object.values(err.errors)[0].message
+            });
+        }
+
+        // Return real error message (TEMPORARY for debugging)
         return res.status(500).json({
             message: err.message
         });

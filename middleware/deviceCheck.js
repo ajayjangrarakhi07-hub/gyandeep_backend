@@ -8,6 +8,8 @@ const deviceCheck = async (req, res, next) => {
 
         if (!email) return next();
 
+        
+
         const user = await User.findOne({ email: email.toLowerCase() });
 
         if (!user) return next();
