@@ -3,148 +3,71 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
-
-const userRoutes = require('./routes/userRoutes');
-
-const quizResultsRoute = require('./routes/quizResults');
-const subjectsRoutes  = require('./routes/subjecstRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');   
-const postRoutes = require('./routes/postRoutes');  
-const getSubjectByNameRoute = require('./routes/subjecstRoutes'); 
-const getSubjectsSummary = require('./routes/subjecstRoutes'); 
-
-
-// Import routes
-const discussionRoutes = require('./routes/discussionRoutes');
-
-// Import routes
-const fullMockTestRoutes = require('./routes/fullMockTestRoutes');
- 
-const paidUserRoutes = require('./routes/paidUserRoutes');
-
-
-const statusRoutes = require("./routes/statusRoutes");
-
-
-const carouselRoutes = require('./routes/carouselRoutes');
-
-const testSeriesRoutes = require('./routes/testSeriesRoutes');
-
-
-
-const paymentRoutes = require("./routes/paymentRoutes");
-
-
-
-
 dotenv.config();
-
-const app = express();
-
-// Middleware
-// app.use(cors());
-app.use(cors({
-    origin: '*', // Use '*' for debugging; specify exact origins in production
-}));
-app.use(express.json());
-
-
-  
-
-// Connect to MongoDB
 connectDB();
 
-
-
-
-/* User ROUTES */
-
-app.use("/api/users", userRoutes);
-
+const app = express();
+app.use(cors({ origin: '*' }));
+app.use(express.json());
 
 // Routes
-app.use('/api', quizResultsRoute);
+const userRoutes = require('./routes/userRoutes');
+const subjectsRoutes = require('./routes/subjecstRoutes'); // all subject routes combined
+const quizResultsRoute = require('./routes/quizResults');
+const reviewRoutes = require('./routes/reviewRoutes');
+const postRoutes = require('./routes/postRoutes');
+const discussionRoutes = require('./routes/discussionRoutes');
+const fullMockTestRoutes = require('./routes/fullMockTestRoutes');
+const paidUserRoutes = require('./routes/paidUserRoutes');
+const statusRoutes = require('./routes/statusRoutes');
+const carouselRoutes = require('./routes/carouselRoutes');
+const testSeriesRoutes = require('./routes/testSeriesRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
-app.use('/api', subjectsRoutes);
+const Subject = require('./models/Subject'); // ✅ Import your model
 
-app.use('/api', reviewRoutes);  // Use review routes
+// Use Routes
+app.use("/api/users", userRoutes);
+app.use("/api/subjects", subjectsRoutes);
+app.use("/api/quiz-results", quizResultsRoute);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/discussions", discussionRoutes);
+app.use("/api/full-mock-tests", fullMockTestRoutes);
+app.use("/api/paid-users", paidUserRoutes);
+app.use("/api/status", statusRoutes);
+app.use("/api/carousel", carouselRoutes);
+app.use("/api/test-series", testSeriesRoutes);
+app.use("/api/payments", paymentRoutes);
 
-app.use('/api', postRoutes); // Use post routes
-
-app.use('/api', getSubjectByNameRoute); // Use new route
-
-app.use('/api', getSubjectsSummary); // Use new route
-
-app.use('/api', discussionRoutes);
-
-app.use('/api', fullMockTestRoutes);
-
-app.use('/api', paidUserRoutes);
-
-// whole app is free(true) or paid(false) 
-app.use("/api", statusRoutes);
-
-
-app.use('/api', testSeriesRoutes);
-
-
- 
-app.use('/api', carouselRoutes); // Make sure the router is added to the correct path
-
-
-app.use("/api", paymentRoutes);
-
-
-
-
-
-
-
-
+// Submit new subject
 app.post('/api/submit-data', async (req, res) => {
     try {
-        console.log('Received data:', JSON.stringify(req.body, null, 2));
+        const { name, categories } = req.body;
+        if (!name || !categories) return res.status(400).json({ message: 'Invalid data' });
 
-        // Validate data (optional)
-        if (!req.body.name || !req.body.categories) {
-            return res.status(400).json({ message: 'Invalid data format' });
-        }
-
-        // Save data to database
-        const newSubject = new Subject(req.body);
+        const newSubject = new Subject({ name, categories });
         const savedSubject = await newSubject.save();
-
-        res.status(201).json({ message: 'Data submitted successfully', savedSubject });
+        res.status(201).json({ message: 'Data submitted', savedSubject });
     } catch (error) {
-        console.error('Error saving data:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 });
 
-
-// Express route for updating a lesson with new categories
+// Update subject categories
 app.put('/api/update-lesson/:name', async (req, res) => {
-    const subjectName = req.params.name;
-    const { categories } = req.body;
-
     try {
         const updatedSubject = await Subject.findOneAndUpdate(
-            { name: subjectName },
-            { $set: { categories } },
+            { name: req.params.name },
+            { $set: { categories: req.body.categories } },
             { new: true }
         );
         res.json(updatedSubject);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to update lesson categories', error });
+        res.status(500).json({ message: 'Update failed', error });
     }
 });
 
-
-
-
-
-// Start server
+// Start Server
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+app.listen(port, () => console.log(`Server running on port ${port}`));

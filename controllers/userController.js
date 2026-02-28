@@ -1,6 +1,34 @@
 const User = require("../models/User");
 const { v4: uuidv4 } = require("uuid");
 
+ 
+
+/* ================= CHECK DEVICE ================= */
+
+exports.checkDevice = async (req, res) => {
+
+    try {
+
+        const { deviceId } = req.body;
+
+        const existingDevice =
+            await User.findOne({ deviceId });
+
+        if (existingDevice) {
+            return res.status(200).json({
+                exists: true
+            });
+        }
+
+        res.json({ exists: false });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error"
+        });
+    }
+};
+
 /* ================= REGISTER ================= */
 
 exports.registerUser = async (req, res) => {

@@ -60,7 +60,8 @@ const userSchema = new mongoose.Schema({
 
     deviceId: {
         type: String,
-        required: true
+        required: true,
+        unique: true   // ⭐ VERY IMPORTANT
     },
 
     createdAt: {
