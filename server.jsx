@@ -26,7 +26,13 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 const Subject = require('./models/Subject'); // ✅ Import your model
 
+import uploadRoutes from "./routes/profileUpload.js";
+/* ================= ROUTES ================= */
+ 
+
 // Use Routes
+
+app.use("/api/upload", uploadRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/subjects", subjectsRoutes);
 app.use("/api/quiz-results", quizResultsRoute);
