@@ -30,32 +30,29 @@ exports.checkDevice = async (req, res) => {
 };
 
 /* ================= REGISTER ================= */
-
 exports.registerUser = async (req, res) => {
-
     try {
-
         const {
+            uid,
             fullName,
             mobile,
             email,
-            password,
             state,
             district,
             village,
             pinCode,
             profileImage,
-            referralCode,
+            referral,
             deviceId
         } = req.body;
 
         /* ===== VALIDATION ===== */
 
         if (
+            !uid ||
             !fullName ||
             !mobile ||
             !email ||
-            !password ||
             !district ||
             !village ||
             !pinCode ||
@@ -69,8 +66,7 @@ exports.registerUser = async (req, res) => {
 
         /* ===== EXIST USER ===== */
 
-        const exist =
-            await User.findOne({ email });
+        const exist = await User.findOne({ email });
 
         if (exist)
             return res.status(400).json({
@@ -81,11 +77,10 @@ exports.registerUser = async (req, res) => {
 
         let coins = 0;
 
-        if (referralCode) {
-            const refUser =
-                await User.findOne({
-                    referralCode
-                });
+        if (referral) {
+            const refUser = await User.findOne({
+                referralCode: referral
+            });
 
             if (refUser) {
                 refUser.coins += 50;
@@ -96,14 +91,15 @@ exports.registerUser = async (req, res) => {
 
         /* ===== CREATE OWN REF CODE ===== */
 
-        const myReferral =
-            uuidv4().slice(0, 6).toUpperCase();
+        const myReferral = uuidv4()
+            .slice(0, 6)
+            .toUpperCase();
 
         const newUser = new User({
+            uid,
             fullName,
             mobile,
             email: email.toLowerCase(),
-            password,
             state: state || "Haryana",
             district,
             village,
@@ -123,9 +119,7 @@ exports.registerUser = async (req, res) => {
         });
 
     } catch (err) {
-
-        console.log(err);
-
+        console.log("REGISTER ERROR:", err);
         res.status(500).json({
             message: "Server Error"
         });
