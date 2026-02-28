@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
     },
     isPaidUser: {
         type: Boolean,
-        default: false
+        default: true,
     },
 
     createdAt: {
