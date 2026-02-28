@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+const userRoutes = require('./routes/userRoutes');
+
 const quizResultsRoute = require('./routes/quizResults');
 const subjectsRoutes  = require('./routes/subjecstRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');   
@@ -45,8 +47,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
+
+  
+
 // Connect to MongoDB
 connectDB();
+
+
+
+
+/* User ROUTES */
+
+app.use("/api/users", userRoutes);
+
 
 // Routes
 app.use('/api', quizResultsRoute);
