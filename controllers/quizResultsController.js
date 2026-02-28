@@ -134,6 +134,7 @@ const saveQuizResult = async (req, res) => {
 // Get all quiz results by email
 const getQuizResults = async (req, res) => {
     const { userEmail } = req.query;
+    
 
     try {
         const results = await QuizResult.find({
