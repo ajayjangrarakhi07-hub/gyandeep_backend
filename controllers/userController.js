@@ -136,6 +136,22 @@ exports.registerUser = async (req, res) => {
 
         console.log("REGISTER ERROR:", err);
 
+        // Duplicate key error
+        if (err.code === 11000) {
+
+            if (err.keyPattern.email) {
+                return res.status(400).json({
+                    message: "Email already exists"
+                });
+            }
+
+            if (err.keyPattern.deviceId) {
+                return res.status(400).json({
+                    message: "Device already registered"
+                });
+            }
+        }
+
         res.status(500).json({
             message: "Server Error"
         });
