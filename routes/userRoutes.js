@@ -8,6 +8,13 @@ const {
 const deviceCheck =
     require("../middleware/deviceCheck");
 
+const { checkDevice } = require("../controllers/userController"); // make sure export matches
+
+// Device check route
+router.post("/check-device", checkDevice);
+
+
+
 /* REGISTER */
 
 router.post(
