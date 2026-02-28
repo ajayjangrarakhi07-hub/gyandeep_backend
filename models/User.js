@@ -73,12 +73,7 @@ const userSchema = new mongoose.Schema({
 
     isPaidUser: {
         type: Boolean,
-        default: true,
-    },
-
-    createdAt: {
-        type: Date,
-        default: Date.now
+        default: true
     }
 
 }, { timestamps: true });

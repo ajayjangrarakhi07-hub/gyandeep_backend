@@ -40,7 +40,6 @@ exports.registerUser = async (req, res) => {
             deviceId
         } = req.body;
 
-        /* ===== VALIDATION ===== */
         if (
             !uid ||
             !fullName ||
@@ -53,19 +52,20 @@ exports.registerUser = async (req, res) => {
             !profileImage ||
             !deviceId
         ) {
-            return res.status(400).json({ message: "All fields required" });
+            return res.status(400).json({
+                message: "All fields required"
+            });
         }
 
-        /* ===== CHECK EXIST USER ===== */
         const exist = await User.findOne({ email: email.toLowerCase() });
         if (exist) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({
+                message: "User already exists"
+            });
         }
 
-        /* ===== HASH PASSWORD ===== */
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        /* ===== REFERRAL SYSTEM ===== */
         let coins = 0;
 
         if (referral) {
@@ -77,10 +77,8 @@ exports.registerUser = async (req, res) => {
             }
         }
 
-        /* ===== CREATE REF CODE ===== */
-        const myReferral = uuidv4().slice(0, 6).toUpperCase();
+        const myReferral = require("uuid").v4().slice(0, 6).toUpperCase();
 
-        /* ===== CREATE USER ===== */
         const newUser = new User({
             uid,
             fullName,
@@ -101,29 +99,18 @@ exports.registerUser = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "Account Created",
-            referralCode: myReferral
+            message: "Account Created"
         });
 
     } catch (err) {
 
-        console.log("REGISTER ERROR:", err);
+        console.log("🔥 FULL REGISTER ERROR:");
+        console.log(err);
+        console.log("ERROR CODE:", err.code);
+        console.log("KEY PATTERN:", err.keyPattern);
 
-        if (err.code === 11000) {
-
-            if (err.keyPattern.email) {
-                return res.status(400).json({ message: "Email already exists" });
-            }
-
-            if (err.keyPattern.deviceId) {
-                return res.status(400).json({ message: "Device already registered" });
-            }
-
-            if (err.keyPattern.uid) {
-                return res.status(400).json({ message: "UID already exists" });
-            }
-        }
-
-        return res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({
+            message: err.message
+        });
     }
 };
