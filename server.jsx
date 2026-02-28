@@ -9,6 +9,7 @@ connectDB();
 const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
@@ -31,7 +32,7 @@ const profileRoutes  = require('./routes/profileRoutes.js');
  
 
 // Use Routes
-
+ 
 app.use("/api/upload", profileRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/subjects", subjectsRoutes);
