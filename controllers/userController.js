@@ -1,5 +1,7 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const { v4: uuidv4 } = require("uuid");
+
 
  
 
@@ -32,11 +34,13 @@ exports.checkDevice = async (req, res) => {
 /* ================= REGISTER ================= */
 exports.registerUser = async (req, res) => {
     try {
+
         const {
             uid,
             fullName,
             mobile,
             email,
+            password,
             state,
             district,
             village,
@@ -53,6 +57,7 @@ exports.registerUser = async (req, res) => {
             !fullName ||
             !mobile ||
             !email ||
+            !password ||
             !district ||
             !village ||
             !pinCode ||
@@ -64,16 +69,22 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        /* ===== EXIST USER ===== */
+        /* ===== CHECK EXIST USER ===== */
 
         const exist = await User.findOne({ email });
 
-        if (exist)
+        if (exist) {
             return res.status(400).json({
                 message: "User already exists"
             });
+        }
 
-        /* ===== REFERRAL BONUS ===== */
+        /* ===== HASH PASSWORD ===== */
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        /* ===== REFERRAL SYSTEM ===== */
 
         let coins = 0;
 
@@ -89,17 +100,20 @@ exports.registerUser = async (req, res) => {
             }
         }
 
-        /* ===== CREATE OWN REF CODE ===== */
+        /* ===== CREATE REF CODE ===== */
 
         const myReferral = uuidv4()
             .slice(0, 6)
             .toUpperCase();
+
+        /* ===== CREATE USER ===== */
 
         const newUser = new User({
             uid,
             fullName,
             mobile,
             email: email.toLowerCase(),
+            password: hashedPassword,   // 🔐 encrypted
             state: state || "Haryana",
             district,
             village,
@@ -119,7 +133,9 @@ exports.registerUser = async (req, res) => {
         });
 
     } catch (err) {
+
         console.log("REGISTER ERROR:", err);
+
         res.status(500).json({
             message: "Server Error"
         });
