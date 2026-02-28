@@ -8,16 +8,22 @@ exports.checkDevice = async (req, res) => {
 
         const { deviceId } = req.body;
 
-        const existingDevice = await User.findOne({ deviceId });
-
-        if (existingDevice) {
-            return res.status(200).json({ exists: true });
+        if (!deviceId) {
+            return res.status(400).json({
+                message: "Device ID required"
+            });
         }
 
-        return res.json({ exists: false });
+        const existingDevice = await User.findOne({ deviceId });
+
+        return res.status(200).json({
+            exists: !!existingDevice
+        });
 
     } catch (error) {
-        return res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({
+            message: error.message
+        });
     }
 };
 
