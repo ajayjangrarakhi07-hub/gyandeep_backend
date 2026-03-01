@@ -41,11 +41,12 @@ router.post(
             });
 
         } catch (error) {
-            console.log("Upload Error:", error);
+            console.log("FULL ERROR:", error);
 
             return res.status(500).json({
                 success: false,
-                message: "Image upload failed",
+                message: error.message,
+                error: error,   // send full error to frontend temporarily
             });
         }
     }
