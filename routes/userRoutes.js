@@ -8,4 +8,6 @@ router.post("/check-device", checkDevice);
 
 router.post("/register", deviceCheck, registerUser);
 
+router.post("/verify-paid-user", verifyPaidUser);
+
 module.exports = router;

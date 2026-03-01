@@ -145,3 +145,43 @@ exports.registerUser = async (req, res) => {
         });
     }
 };
+
+
+
+/* ================= VERIFY PAID USER ================= */
+exports.verifyPaidUser = async (req, res) => {
+    try {
+        const { email, mobile, deviceId } = req.body;
+
+        if (!email || !mobile || !deviceId) {
+            return res.status(400).json({
+                success: false,
+                message: "Email, mobile and deviceId required"
+            });
+        }
+
+        const user = await User.findOne({
+            email: email.toLowerCase(),
+            mobile,
+            deviceId
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found on this device"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            isPaidUser: user.isPaidUser
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
