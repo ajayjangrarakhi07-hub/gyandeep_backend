@@ -147,9 +147,6 @@ exports.registerUser = async (req, res) => {
 };
 
 
-
-
-
 /* ================= VERIFY PAID USER ================= */
 exports.verifyPaidUser = async (req, res) => {
     try {
@@ -187,6 +184,49 @@ exports.verifyPaidUser = async (req, res) => {
         });
     }
 }; 
+
+
+exports.updatePaidStatus = async (req, res) => {
+    try {
+        const { email, mobile, isPaidUser } = req.body;
+
+        if (!email && !mobile) {
+            return res.status(400).json({
+                success: false,
+                message: "Email or Mobile required"
+            });
+        }
+
+        const user = await User.findOne({
+            $or: [
+                { email: email?.toLowerCase() },
+                { mobile }
+            ]
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.isPaidUser = isPaidUser ?? true;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Paid status updated successfully",
+            isPaidUser: user.isPaidUser
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 
 
 
