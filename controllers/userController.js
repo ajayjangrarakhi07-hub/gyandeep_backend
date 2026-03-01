@@ -148,6 +148,8 @@ exports.registerUser = async (req, res) => {
 
 
 
+
+
 /* ================= VERIFY PAID USER ================= */
 exports.verifyPaidUser = async (req, res) => {
     try {
@@ -184,4 +186,7 @@ exports.verifyPaidUser = async (req, res) => {
             message: error.message
         });
     }
-};
+}; 
+
+
+
