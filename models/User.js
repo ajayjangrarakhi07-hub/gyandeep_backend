@@ -74,6 +74,10 @@ const userSchema = new mongoose.Schema({
     isPaidUser: {
         type: Boolean,
         default: false
+    },
+    paidExpiryDate: {
+        type: Date,
+        default: null
     }
 
 }, { timestamps: true });

@@ -152,15 +152,8 @@ exports.verifyPaidUser = async (req, res) => {
     try {
         const { email, mobile, deviceId } = req.body;
 
-        if (!email || !mobile || !deviceId) {
-            return res.status(400).json({
-                success: false,
-                message: "Email, mobile and deviceId required"
-            });
-        }
-
         const user = await User.findOne({
-            email: email.toLowerCase(),
+            email: email?.toLowerCase(),
             mobile,
             deviceId
         });
@@ -168,13 +161,23 @@ exports.verifyPaidUser = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: "User not found on this device"
+                message: "User not found"
             });
+        }
+
+        // 🔥 Auto expire check
+        if (user.isPaidUser && user.paidExpiryDate) {
+            if (new Date() > user.paidExpiryDate) {
+                user.isPaidUser = false;
+                user.paidExpiryDate = null;
+                await user.save();
+            }
         }
 
         return res.status(200).json({
             success: true,
-            isPaidUser: user.isPaidUser
+            isPaidUser: user.isPaidUser,
+            expiry: user.paidExpiryDate
         });
 
     } catch (error) {
@@ -183,19 +186,11 @@ exports.verifyPaidUser = async (req, res) => {
             message: error.message
         });
     }
-}; 
-
+};
 
 exports.updatePaidStatus = async (req, res) => {
     try {
         const { email, mobile, isPaidUser } = req.body;
-
-        if (!email && !mobile) {
-            return res.status(400).json({
-                success: false,
-                message: "Email or Mobile required"
-            });
-        }
 
         const user = await User.findOne({
             $or: [
@@ -211,13 +206,23 @@ exports.updatePaidStatus = async (req, res) => {
             });
         }
 
-        user.isPaidUser = isPaidUser ?? true;
+        if (isPaidUser) {
+            const expiry = new Date();
+            expiry.setFullYear(expiry.getFullYear() + 3);
+
+            user.isPaidUser = true;
+            user.paidExpiryDate = expiry;
+        } else {
+            user.isPaidUser = false;
+            user.paidExpiryDate = null;
+        }
+
         await user.save();
 
         return res.status(200).json({
             success: true,
-            message: "Paid status updated successfully",
-            isPaidUser: user.isPaidUser
+            message: "Paid status updated",
+            expiry: user.paidExpiryDate
         });
 
     } catch (error) {
@@ -229,4 +234,25 @@ exports.updatePaidStatus = async (req, res) => {
 };
 
 
+exports.getAllUsers = async (req, res) => {
+    const users = await User.find().select("-password");
+    res.json({ success: true, users });
+};
 
+exports.getPaidUsers = async (req, res) => {
+    const users = await User.find({ isPaidUser: true }).select("-password");
+    res.json({ success: true, users });
+};
+exports.searchUsers = async (req, res) => {
+    const { query } = req.query;
+
+    const users = await User.find({
+        $or: [
+            { email: { $regex: query, $options: "i" } },
+            { mobile: { $regex: query, $options: "i" } },
+            { fullName: { $regex: query, $options: "i" } }
+        ]
+    }).select("-password");
+
+    res.json({ success: true, users });
+};
