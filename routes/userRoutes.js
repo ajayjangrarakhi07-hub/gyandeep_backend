@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { registerUser, checkDevice, verifyPaidUser ,updatePaidStatus,getAllUsers,getPaidUsers,searchUsers } = require("../controllers/userController");
+const { updateLoginSession,registerUser, checkDevice, verifyPaidUser ,updatePaidStatus,getAllUsers,getPaidUsers,searchUsers } = require("../controllers/userController");
+ 
 const deviceCheck = require("../middleware/deviceCheck");
+
 
 const adminAuth = require("../middleware/adminAuth");
 
@@ -11,6 +13,8 @@ const adminAuth = require("../middleware/adminAuth");
 router.post("/check-device", checkDevice);
 
 router.post("/register", deviceCheck, registerUser);
+
+router.post("/update-login-session", updateLoginSession);
 
 router.post("/verify-paid-user", verifyPaidUser);
 

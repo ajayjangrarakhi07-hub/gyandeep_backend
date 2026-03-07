@@ -8,6 +8,51 @@ const generateLoginToken = () => {
     return crypto.randomBytes(32).toString("hex");
 };
 
+/* ================= UPDATE LOGIN SESSION ================= */
+
+exports.updateLoginSession = async (req, res) => {
+
+    try {
+
+        const { email, deviceId, loginToken } = req.body;
+
+        if (!email || !deviceId || !loginToken) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing fields"
+            });
+        }
+
+        const user = await User.findOne({
+            email: email.toLowerCase()
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.deviceId = deviceId;
+        user.loginToken = loginToken;
+
+        await user.save();
+
+        res.json({
+            success: true,
+            message: "Login session updated"
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 /* ================= CHECK DEVICE ================= */
 exports.checkDevice = async (req, res) => {
     try {
@@ -39,7 +84,6 @@ exports.checkDevice = async (req, res) => {
 /* ================= REGISTER USER ================= */
 exports.registerUser = async (req, res) => {
     try {
-
         const {
             uid,
             fullName,
