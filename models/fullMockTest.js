@@ -10,6 +10,7 @@ const questionSchema = new mongoose.Schema({
         }
     },
     question: { type: String, required: true },
+    questionImage: { type: String, default: null },  // image below question
     option1: { type: String, required: true },
     option2: { type: String, required: true },
     option3: { type: String, required: true },
@@ -26,6 +27,7 @@ const questionSchema = new mongoose.Schema({
         },
     },
     description: { type: String, required: true },
+    descriptionImage: { type: String, default: null }, // image below description
 });
 
 // Define the schema for FullMockTest
