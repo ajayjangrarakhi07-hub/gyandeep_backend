@@ -70,7 +70,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-
+    loginToken: {
+        type: String,
+        default: null
+    },
     isPaidUser: {
         type: Boolean,
         default: false
