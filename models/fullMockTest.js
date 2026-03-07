@@ -28,6 +28,10 @@ const questionSchema = new mongoose.Schema({
     },
     description: { type: String, required: true },
     descriptionImage: { type: String, default: null }, // image below description
+    youtubeLink: {
+        type: String,
+        default: null
+    },
 });
 
 // Define the schema for FullMockTest
